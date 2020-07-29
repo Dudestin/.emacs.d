@@ -93,8 +93,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (w3m alect-themes multiple-cursors helm-gtags quickrun flycheck helm-swoop helm))))
+   (quote 
+    (mozc w3m alect-themes multiple-cursors helm-gtags quickrun flycheck helm-swoop helm))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -106,3 +106,11 @@
 (autoload 'navi2ch "navi2ch" "Navigator for 2ch for Emacs" t)
 (setq navi2ch-net-http-proxy "127.0.0.1:9080")
 (setq browse-url-browser-function 'w3m-browse-url)
+
+;; mozc
+(require 'mozc)
+(set-language-environment "Japanese")
+(setq default-input-method "japanese-mozc")
+(prefer-coding-system 'utf-8)
+(global-unset-key (kbd "C-SPC"))
+(global-set-key (kbd "C-SPC") 'toggle-input-method)
