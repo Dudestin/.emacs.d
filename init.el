@@ -31,12 +31,15 @@
 (global-unset-key (kbd "C-x b"))
 (global-unset-key (kbd "C-c h C-x C-f"))
 (global-unset-key (kbd "M-x"))
+(global-unset-key (kbd "C-c h M-y"))
+(global-unset-key (kbd "M-y"))
 
 (global-set-key (kbd "C-x b") 'helm-mini)
 (global-set-key (kbd "C-x C-b") 'helm-mini)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
 
 ;; helm-gtags: key bindings
 (add-hook 'helm-gtags-mode-hook
@@ -54,25 +57,6 @@
 
 (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
 
-;; C Style
-(add-hook `c-mode-hook
-	  `(lambda()
-	     (c-set-style "ellemtel")
-	     (setq indent-tabs-mode nil)
-	     (c-set-offset 'innamespace 0)
-	     (c-set-offset 'arglist-close 0)
-	     ))
-(add-hook `c-mode-hook `helm-gtags-mode)
-
-;; C++ Style
-(add-hook `c++-mode-hook
-	  `(lambda()
-	     (c-set-style "ellemtel")
-	     (setq indent-tabs-mode nil)
-	     (c-set-offset 'innamespace 0)
-	     (c-set-offset 'arglist-close 0)
-	     ))
-(add-hook `c++-mode-hook `helm-gtags-mode)
 
 ;; gdb
 (setq gdb-many-windows t)
@@ -93,8 +77,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote 
-    (mozc w3m alect-themes multiple-cursors helm-gtags quickrun flycheck helm-swoop helm))))
+   (quote
+    (yasnippet-snippets helm-c-yasnippet yasnippet srefactor mozc w3m alect-themes multiple-cursors helm-gtags quickrun flycheck helm-swoop helm))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -112,5 +96,40 @@
 (set-language-environment "Japanese")
 (setq default-input-method "japanese-mozc")
 (prefer-coding-system 'utf-8)
-(global-unset-key (kbd "C-SPC"))
-(global-set-key (kbd "C-SPC") 'toggle-input-method)
+(global-unset-key (kbd "C-c i"))
+(global-set-key (kbd "C-c i") 'toggle-input-method)
+
+;; yasnippet
+(require 'yasnippet)
+(require 'helm-c-yasnippet)
+(setq helm-yas-space-match-any-greedy t)
+(global-set-key (kbd "C-x y i") 'helm-yas-complete)
+(yas-global-mode 1)
+
+;; srefactor
+(semantic-mode 1)
+(require 'srefactor)
+(require 'srefactor-lisp)
+
+;; C Style
+(add-hook `c-mode-hook
+	  `(lambda()
+	     (c-set-style "ellemtel")
+	     (setq indent-tabs-mode nil)
+	     (c-set-offset 'innamespace 0)
+	     (c-set-offset 'arglist-close 0)
+             (helm-gtags-mode)
+	     (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+	     ))
+
+
+;; C++ Style
+(add-hook `c++-mode-hook
+	  `(lambda()
+	     (c-set-style "ellemtel")
+	     (setq indent-tabs-mode nil)
+	     (c-set-offset 'innamespace 0)
+	     (c-set-offset 'arglist-close 0)
+             (helm-gtags-mode)
+	     (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+	     ))
